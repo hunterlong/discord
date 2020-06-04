@@ -17,4 +17,4 @@ COPY --from=base /go/src/github.com/hunterlong/discord/discord /usr/local/bin/di
 ENV YOUTUBE "empty"
 ENV DISCORD "empty"
 
-RUN /usr/local/bin/discord
+CMD /usr/local/bin/discord
