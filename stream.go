@@ -28,7 +28,7 @@ var (
 )
 
 func PlayAudioFile(v *discordgo.VoiceConnection, filename string, stop <-chan bool) {
-	youtubeDl := exec.Command("/usr/local/bin/youtube-dl", "-f", "251", filename, "-o", "-")
+	youtubeDl := exec.Command("youtube-dl", "-f", "251", filename, "-o", "-")
 	youtubeOut, err := youtubeDl.StdoutPipe()
 	if err != nil {
 		panic(err)
@@ -39,7 +39,7 @@ func PlayAudioFile(v *discordgo.VoiceConnection, filename string, stop <-chan bo
 		panic(err)
 	}
 
-	ffmpegRun := exec.Command("/usr/local/bin/ffmpeg", "-i", "pipe:0", "-f", "s16le", "-ar", strconv.Itoa(frameRate), "-ac", strconv.Itoa(channels), "pipe:1")
+	ffmpegRun := exec.Command("ffmpeg", "-i", "pipe:0", "-f", "s16le", "-ar", strconv.Itoa(frameRate), "-ac", strconv.Itoa(channels), "pipe:1")
 	ffmpegRun.Stdin = youtubeOut
 	ffmpegout, err := ffmpegRun.StdoutPipe()
 	if err != nil {
