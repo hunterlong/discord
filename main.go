@@ -72,24 +72,24 @@ func playNext(chanIndex, vidIndex int) {
 	chanObj := playableChannels[chanIndex]
 	video := chanObj.Items[vidIndex]
 	if video == nil {
+		fmt.Printf("video %v not found\n", vidIndex)
 		updateList()
-		playNext(chanIndex, vidIndex)
-		return
+		chanObj = playableChannels[0]
+		video = chanObj.Items[vidIndex]
 	}
 	fmt.Printf("Now streaming: %s - %s\n", video.Snippet.ChannelTitle, video.Snippet.Title)
 	client.UpdateStatus(0, fmt.Sprintf("%s - %s", video.Snippet.ChannelTitle, video.Snippet.Title))
 	PlayAudioFile(vconn, fmt.Sprintf("https://www.youtube.com/watch?v=%s", video.ID.VideoID), make(chan bool))
 
-	vidIndex++
-	if chanIndex <= len(playableChannels)-1 {
-		chanIndex++
-	}
+	fmt.Printf("playing next channel %v item %v\n", chanIndex, vidIndex)
 
-	if vidIndex >= 15 {
+	if vidIndex >= len(playableChannels[chanIndex].Items) {
+		fmt.Println("updating list from channel: ", chanIndex)
 		updateList()
 		vidIndex = 0
-		chanIndex = 0
 	}
+
+	vidIndex++
 
 	playNext(chanIndex, vidIndex)
 }

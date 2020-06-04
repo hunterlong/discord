@@ -3,6 +3,7 @@ package main
 import (
 	"bufio"
 	"encoding/binary"
+	"fmt"
 	"github.com/bwmarrin/discordgo"
 	"io"
 	"layeh.com/gopus"
@@ -106,11 +107,9 @@ func SendPCM(v *discordgo.VoiceConnection, pcm <-chan []int16) {
 	if pcm == nil {
 		return
 	}
-
 	var err error
 
 	opusEncoder, err = gopus.NewEncoder(frameRate, channels, gopus.Audio)
-
 	if err != nil {
 		panic(err)
 	}
@@ -120,7 +119,8 @@ func SendPCM(v *discordgo.VoiceConnection, pcm <-chan []int16) {
 		// read pcm from chan, exit if channel is closed.
 		recv, ok := <-pcm
 		if !ok {
-			panic(err)
+			fmt.Println("song ended")
+			return
 		}
 
 		// try encoding pcm frame with Opus
