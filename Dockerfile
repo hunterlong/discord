@@ -24,5 +24,4 @@ ENV CHANNEL_ID "empty"
 ENV GUILD_ID "empty"
 ENV CHANNELS "empty"
 
-ENTRYPOINT /bin/bash
-CMD ["/root/discord"]
+ENTRYPOINT /root/discord
