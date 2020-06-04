@@ -8,9 +8,10 @@ ENV PATH /go/bin:$PATH
 RUN mkdir -p ${GOPATH}/src ${GOPATH}/bin
 
 WORKDIR ${GOPATH}/src/github.com/hunterlong/discord
-ADD go.mod ./
-ADD go.sum ./
+ADD go.mod .
+ADD go.sum .
 RUN go mod download
+ADD . .
 
 RUN go build -o discord
 RUN mv discord /usr/local/bin/discord
