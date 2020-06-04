@@ -45,6 +45,12 @@ discord_music:
     - discordaudio:/downloads:rw
 ```
 
+## Build from Source
+You should have Golang installed, I recommend using the latest version. The follow the simple steps below:
+1. `go mod download` Download all go modules
+2. `go build -o discord` Compile golang binary for your system's OS.
+3. Enjoy.
+
 ## Packages Used
 - [bwmarrin/discordgo](https://github.com/bwmarrin/discordgo)
 - [bwmarrin/dgvoice](https://github.com/bwmarrin/dgvoice)
