@@ -7,20 +7,21 @@ import (
 )
 
 const (
-	token = "NzE3Njg4NDA5ODgzMjc5NDQw.Xtd94Q.2afdQqI3yFi59WbJJpxpWenTCBI"
 	channel = "717663692887556127"
-	appId = "717688409883279440"
+	appId   = "717688409883279440"
 	guildId = "710101581030490182"
 )
 
 var (
-	client *discordgo.Session
-	vconn *discordgo.VoiceConnection
+	client     *discordgo.Session
+	vconn      *discordgo.VoiceConnection
 	youtubeKey string
+	discordKey string
 )
 
 func init() {
 	youtubeKey = os.Getenv("YOUTUBE")
+	discordKey = os.Getenv("DISCORD")
 }
 
 func main() {
@@ -36,7 +37,7 @@ func main() {
 		fmt.Println(i.ID.VideoID)
 	}
 
-	client, err = discordgo.New("Bot " + token)
+	client, err = discordgo.New("Bot " + discordKey)
 	if err != nil {
 		panic(err)
 	}
@@ -63,5 +64,5 @@ func Close() {
 func playNext(i int) {
 	video := playableVids[i]
 	PlayAudioFile(vconn, fmt.Sprintf(fmt.Sprintf("https://www.youtube.com/watch?v=%s", video.ID.VideoID)), make(chan bool))
-	playNext(i+1)
+	playNext(i + 1)
 }
