@@ -78,10 +78,10 @@ func PlayAudioFile(v *discordgo.VoiceConnection, filename string, stop <-chan bo
 	send := make(chan []int16, 2)
 	defer close(send)
 
-	close := make(chan bool)
+	closer := make(chan bool)
 	go func() {
 		SendPCM(v, send)
-		close <- true
+		closer <- true
 	}()
 
 	for {
@@ -97,7 +97,7 @@ func PlayAudioFile(v *discordgo.VoiceConnection, filename string, stop <-chan bo
 		// Send received PCM to the sendPCM channel
 		select {
 		case send <- audiobuf:
-		case <-close:
+		case <-closer:
 			return
 		}
 	}
