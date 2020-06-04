@@ -70,24 +70,24 @@ func Close() {
 func playNext(chanIndex, vidIndex int) {
 	chanObj := playableChannels[chanIndex]
 	video := chanObj.Items[vidIndex]
+	if video == nil {
+		updateList()
+		playNext(chanIndex, vidIndex)
+		return
+	}
 	fmt.Printf("Now streaming: %s - %s\n", video.Snippet.ChannelTitle, video.Snippet.Title)
 	client.UpdateStatus(0, fmt.Sprintf("%s - %s", video.Snippet.ChannelTitle, video.Snippet.Title))
 	PlayAudioFile(vconn, fmt.Sprintf("https://www.youtube.com/watch?v=%s", video.ID.VideoID), make(chan bool))
 
-	if vidIndex >= 3 {
+	vidIndex++
+	if chanIndex <= len(playableChannels)-1 {
 		chanIndex++
-		if chanIndex >= len(playableChannels) {
-			chanIndex = 0
-		} else {
-			chanIndex++
-			vidIndex = 0
-		}
-	} else {
-		vidIndex += 1
 	}
 
 	if vidIndex >= 15 {
 		updateList()
+		vidIndex = 0
+		chanIndex = 0
 	}
 
 	playNext(chanIndex, vidIndex)
