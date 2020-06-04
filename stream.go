@@ -19,11 +19,12 @@ const (
 )
 
 var (
-	speakers    map[uint32]*gopus.Decoder
-	opusEncoder *gopus.Encoder
-	mu          sync.Mutex
-	playableVids []*Item
-	onIndex int
+	speakers         map[uint32]*gopus.Decoder
+	opusEncoder      *gopus.Encoder
+	mu               sync.Mutex
+	playableChannels []*YoutubeOut
+	onIndex          int
+	onChannel        int
 )
 
 func PlayAudioFile(v *discordgo.VoiceConnection, filename string, stop <-chan bool) {

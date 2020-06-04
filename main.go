@@ -4,12 +4,11 @@ import (
 	"fmt"
 	"github.com/bwmarrin/discordgo"
 	"os"
+	"strings"
 )
 
 const (
-	channel = "717663692887556127"
-	appId   = "717688409883279440"
-	guildId = "710101581030490182"
+	appId = "717688409883279440"
 )
 
 var (
@@ -17,26 +16,33 @@ var (
 	vconn      *discordgo.VoiceConnection
 	youtubeKey string
 	discordKey string
+	chans      string
+	channel    string
+	guildId    string
 )
 
 func init() {
+	channel = os.Getenv("CHANNEL_ID")
+	guildId = os.Getenv("GUILD_ID")
 	youtubeKey = os.Getenv("YOUTUBE")
 	discordKey = os.Getenv("DISCORD")
+	chans = os.Getenv("CHANNELS")
+}
+
+func updateList() {
+	for _, v := range strings.Split(chans, ",") {
+		out, err := Channel(v)
+		if err != nil {
+			panic(err)
+		}
+		playableChannels = append(playableChannels, out)
+	}
 }
 
 func main() {
+	updateList()
+
 	var err error
-
-	out, err := Channel("UCYxRlFDqcWM4y7FfpiAN3KQ")
-	if err != nil {
-		panic(err)
-	}
-
-	for _, i := range out.Items {
-		playableVids = append(playableVids, i)
-		fmt.Println(i.ID.VideoID)
-	}
-
 	client, err = discordgo.New("Bot " + discordKey)
 	if err != nil {
 		panic(err)
@@ -51,7 +57,7 @@ func main() {
 		panic(err)
 	}
 
-	playNext(onIndex)
+	playNext(onChannel, onIndex)
 
 	defer Close()
 }
@@ -61,8 +67,28 @@ func Close() {
 	client.Close()
 }
 
-func playNext(i int) {
-	video := playableVids[i]
-	PlayAudioFile(vconn, fmt.Sprintf(fmt.Sprintf("https://www.youtube.com/watch?v=%s", video.ID.VideoID)), make(chan bool))
-	playNext(i + 1)
+func playNext(chanIndex, vidIndex int) {
+	chanObj := playableChannels[chanIndex]
+	video := chanObj.Items[vidIndex]
+	fmt.Printf("Now streaming: %s - %s\n", video.Snippet.ChannelTitle, video.Snippet.Title)
+	client.UpdateStatus(0, fmt.Sprintf("%s - %s", video.Snippet.ChannelTitle, video.Snippet.Title))
+	PlayAudioFile(vconn, fmt.Sprintf("https://www.youtube.com/watch?v=%s", video.ID.VideoID), make(chan bool))
+
+	if vidIndex >= 3 {
+		chanIndex++
+		if chanIndex >= len(playableChannels) {
+			chanIndex = 0
+		} else {
+			chanIndex++
+			vidIndex = 0
+		}
+	} else {
+		vidIndex += 1
+	}
+
+	if vidIndex >= 15 {
+		updateList()
+	}
+
+	playNext(chanIndex, vidIndex)
 }
