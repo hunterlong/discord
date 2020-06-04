@@ -1,10 +1,12 @@
 FROM golang:1.14 as base
-WORKDIR /go/src/github.com/hunterlong/discord
-ADD . /go/src/github.com/hunterlong/discord
-RUN go mod download && \
-    go build -o discord
 
-RUN mv discord /usr/local/bin/discord
+WORKDIR /go/src/github.com/hunterlong/discord
+ADD go.mod /go/src/github.com/hunterlong/discord
+ADD go.sum /go/src/github.com/hunterlong/discord
+RUN go mod download
+
+ADD . /go/src/github.com/hunterlong/discord
+RUN go build -o discord
 
 FROM qmcgaw/youtube-dl-alpine
 USER root
