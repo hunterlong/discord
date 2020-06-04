@@ -32,6 +32,7 @@ func init() {
 func updateList() {
 	for _, v := range strings.Split(chans, ",") {
 		out, err := Channel(v)
+		fmt.Println("Got items: ", len(out.Items))
 		if err != nil {
 			panic(err)
 		}

@@ -12,10 +12,23 @@ func Channel(channelId string) (*YoutubeOut, error) {
 	url := fmt.Sprintf("https://www.googleapis.com/youtube/v3/search?key=%s&channelId=%s&part=snippet,id&order=date&maxResults=20", youtubeKey, channelId)
 	resp, err := http.Get(url)
 	if err != nil {
-		return nil, err
+		fmt.Println("Error:", err)
+		time.Sleep(15 * time.Second)
+		return Channel(channelId)
+	}
+	if resp.StatusCode != http.StatusOK {
+		fmt.Println("Status Code:", resp.StatusCode)
+		time.Sleep(15 * time.Second)
+		return Channel(channelId)
 	}
 	defer resp.Body.Close()
-	d, _ := ioutil.ReadAll(resp.Body)
+	d, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		fmt.Println("Read Error:", err)
+		time.Sleep(15 * time.Second)
+		return Channel(channelId)
+	}
+	fmt.Println(string(d))
 	var vid *YoutubeOut
 	err = json.Unmarshal(d, &vid)
 	return vid, err
