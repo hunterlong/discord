@@ -6,16 +6,19 @@ ADD go.sum /go/src/github.com/hunterlong/discord
 RUN go mod download
 
 ADD . /go/src/github.com/hunterlong/discord
-RUN go build -o discord && \
+RUN go build -o discord . && \
     chmod +x discord
 
 FROM qmcgaw/youtube-dl-alpine
 USER root
 
-COPY --from=base /go/src/github.com/hunterlong/discord/discord /usr/local/bin/discord
+WORKDIR /root/
+COPY --from=base /go/src/github.com/hunterlong/discord/discord .
 
 ENV YOUTUBE "empty"
 ENV DISCORD "empty"
+ENV CHANNEL_ID "empty"
+ENV GUILD_ID "empty"
+ENV CHANNELS "empty"
 
-CMD /bin/bash
-ENTRYPOINT /usr/local/bin/discord
+CMD ["/root/discord"]
