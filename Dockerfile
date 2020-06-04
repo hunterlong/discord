@@ -12,6 +12,8 @@ RUN go build -o discord . && \
 FROM qmcgaw/youtube-dl-alpine
 USER root
 
+RUN apk --no-cache add curl jq ca-certificates linux-headers
+
 WORKDIR /root/
 COPY --from=base /go/src/github.com/hunterlong/discord/discord .
 
@@ -21,4 +23,5 @@ ENV CHANNEL_ID "empty"
 ENV GUILD_ID "empty"
 ENV CHANNELS "empty"
 
-ENTRYPOINT "/root/discord"
+ENTRYPOINT /bin/sh
+CMD ["/root/discord"]
