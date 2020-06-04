@@ -1,6 +1,6 @@
 FROM golang:1.14 as base
 RUN apt update && \
-    apt install -y libstdc++ gcc g++ make git ca-certificates linux-headers wget curl jq
+    apt install -y libstdc++ gcc g++ make git ca-certificates wget curl jq
 
 WORKDIR /go/src/github.com/hunterlong/discord
 ADD go.mod .
