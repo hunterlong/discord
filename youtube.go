@@ -9,7 +9,7 @@ import (
 )
 
 func Channel(channelId string) (*YoutubeOut, error) {
-	url := fmt.Sprintf("https://www.googleapis.com/youtube/v3/search?key=%s&channelId=%s&part=snippet,id&order=date&maxResults=20", youtubeKey, channelId)
+	url := fmt.Sprintf("https://www.googleapis.com/youtube/v3/search?key=%s&channelId=%s&part=snippet,id&order=date&maxResults=%v", youtubeKey, channelId, limitVids)
 	resp, err := http.Get(url)
 	if err != nil {
 		fmt.Println("Error:", err)

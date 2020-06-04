@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/bwmarrin/discordgo"
 	"os"
+	"strconv"
 	"strings"
 )
 
@@ -15,6 +16,7 @@ var (
 	chans      string
 	channel    string
 	guildId    string
+	limitVids  int64
 )
 
 func init() {
@@ -23,12 +25,17 @@ func init() {
 	youtubeKey = os.Getenv("YOUTUBE")
 	discordKey = os.Getenv("DISCORD")
 	chans = os.Getenv("CHANNELS")
+	lim := os.Getenv("LIMIT")
+	limitVids, _ = strconv.ParseInt(lim, 10, 64)
+	if limitVids == 0 {
+		limitVids = 20
+	}
 }
 
 func updateList() {
 	for _, v := range strings.Split(chans, ",") {
 		out, err := Channel(v)
-		fmt.Println("Got items: ", len(out.Items))
+		fmt.Printf("Found %v videos for Channel: %s\n", len(out.Items), v)
 		if err != nil {
 			panic(err)
 		}
@@ -77,17 +84,24 @@ func playNext(chanIndex, vidIndex int) {
 	if err := client.UpdateStatus(0, fmt.Sprintf("%s - %s", video.Snippet.ChannelTitle, video.Snippet.Title)); err != nil {
 		fmt.Println(err)
 	}
+
 	PlayAudioFile(vconn, fmt.Sprintf("https://www.youtube.com/watch?v=%s", video.ID.VideoID), make(chan bool))
 
 	fmt.Printf("playing next channel %v item %v\n", chanIndex, vidIndex)
 
-	if vidIndex >= len(playableChannels[chanIndex].Items) {
-		fmt.Println("updating list from channel: ", chanIndex)
-		updateList()
+	vidIndex++
+
+	if vidIndex >= len(chanObj.Items) {
 		vidIndex = 0
+		chanIndex++
 	}
 
-	vidIndex++
+	if chanIndex >= len(playableChannels) {
+		fmt.Println("updating list from channel: ", chanIndex)
+		updateList()
+		chanIndex = 0
+		vidIndex = 0
+	}
 
 	playNext(chanIndex, vidIndex)
 }
