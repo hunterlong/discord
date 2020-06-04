@@ -6,7 +6,8 @@ ADD go.sum /go/src/github.com/hunterlong/discord
 RUN go mod download
 
 ADD . /go/src/github.com/hunterlong/discord
-RUN go build -o discord
+RUN go build -o discord && \
+    chmod +x discord
 
 FROM qmcgaw/youtube-dl-alpine
 USER root
@@ -16,4 +17,4 @@ COPY --from=base /go/src/github.com/hunterlong/discord/discord /usr/local/bin/di
 ENV YOUTUBE "empty"
 ENV DISCORD "empty"
 
-RUN discord
+RUN /usr/local/bin/discord
