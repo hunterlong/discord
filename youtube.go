@@ -28,7 +28,6 @@ func Channel(channelId string) (*YoutubeOut, error) {
 		time.Sleep(15 * time.Second)
 		return Channel(channelId)
 	}
-	fmt.Println(string(d))
 	var vid *YoutubeOut
 	err = json.Unmarshal(d, &vid)
 	return vid, err
@@ -47,13 +46,15 @@ type YoutubeOut struct {
 }
 
 type Item struct {
-	Kind string `json:"kind"`
-	Etag string `json:"etag"`
-	ID   struct {
-		Kind    string `json:"kind"`
-		VideoID string `json:"videoId"`
-	} `json:"id"`
+	Kind    string   `json:"kind"`
+	Etag    string   `json:"etag"`
+	ID      *ItemID  `json:"id"`
 	Snippet *Snippet `json:"snippet"`
+}
+
+type ItemID struct {
+	Kind    string `json:"kind"`
+	VideoID string `json:"videoId"`
 }
 
 type Snippet struct {

@@ -7,10 +7,6 @@ import (
 	"strings"
 )
 
-const (
-	appId = "717688409883279440"
-)
-
 var (
 	client     *discordgo.Session
 	vconn      *discordgo.VoiceConnection
@@ -58,9 +54,9 @@ func main() {
 		panic(err)
 	}
 
-	playNext(onChannel, onIndex)
-
 	defer Close()
+
+	playNext(onChannel, onIndex)
 }
 
 func Close() {
@@ -77,8 +73,10 @@ func playNext(chanIndex, vidIndex int) {
 		chanObj = playableChannels[0]
 		video = chanObj.Items[vidIndex]
 	}
-	fmt.Printf("Now streaming: %s - %s\n", video.Snippet.ChannelTitle, video.Snippet.Title)
-	client.UpdateStatus(0, fmt.Sprintf("%s - %s", video.Snippet.ChannelTitle, video.Snippet.Title))
+	fmt.Printf("Now streaming: %s - %s - https://www.youtube.com/watch?v=%s\n", video.Snippet.ChannelTitle, video.Snippet.Title, video.ID.VideoID)
+	if err := client.UpdateStatus(0, fmt.Sprintf("%s - %s", video.Snippet.ChannelTitle, video.Snippet.Title)); err != nil {
+		fmt.Println(err)
+	}
 	PlayAudioFile(vconn, fmt.Sprintf("https://www.youtube.com/watch?v=%s", video.ID.VideoID), make(chan bool))
 
 	fmt.Printf("playing next channel %v item %v\n", chanIndex, vidIndex)
