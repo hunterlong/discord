@@ -1,6 +1,5 @@
-FROM golang:1.14 as base
-RUN apt update && \
-    apt install -y gcc g++ make git ca-certificates wget curl jq
+FROM golang:1.14.2-alpine as base
+RUN apk add --no-cache libstdc++ gcc g++ make git ca-certificates linux-headers wget curl jq
 
 WORKDIR /go/src/github.com/hunterlong/discord
 ADD go.mod .
