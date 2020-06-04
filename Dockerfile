@@ -1,8 +1,9 @@
 FROM golang:1.14 as base
+RUN apk add --no-cache libstdc++ gcc g++ make git ca-certificates linux-headers wget curl jq
 
 WORKDIR /go/src/github.com/hunterlong/discord
-ADD go.mod /go/src/github.com/hunterlong/discord
-ADD go.sum /go/src/github.com/hunterlong/discord
+ADD go.mod .
+ADD go.sum .
 RUN go mod download
 
 ADD . .
