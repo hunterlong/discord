@@ -1,7 +1,7 @@
 FROM golang:1.14 as base
 WORKDIR /go/src/github.com/hunterlong/discord
 ADD . /go/src/github.com/hunterlong/discord
-RUN go mod download \
+RUN go mod download && \
     go build -o discord
 
 RUN mv discord /usr/local/bin/discord
