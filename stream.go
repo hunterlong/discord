@@ -10,7 +10,6 @@ import (
 	"os"
 	"os/exec"
 	"strconv"
-	"sync"
 )
 
 const (
@@ -21,18 +20,16 @@ const (
 )
 
 var (
-	speakers         map[uint32]*gopus.Decoder
 	opusEncoder      *gopus.Encoder
-	mu               sync.Mutex
 	playableChannels []*YoutubeOut
 	onIndex          int
 	onChannel        int
 )
 
+// PlayAudioFile
 func PlayAudioFile(v *discordgo.VoiceConnection, filename string, stop <-chan bool) {
 	youtubeDl := exec.Command("youtube-dl", "--no-color", "--audio-format", "best", "--audio-format", "opus", filename, "-o", "-")
 	youtubeOut, err := youtubeDl.StdoutPipe()
-	youtubeDl.Stderr = os.Stderr
 	if err != nil {
 		panic(err)
 	}
@@ -109,7 +106,7 @@ func SendPCM(v *discordgo.VoiceConnection, pcm <-chan []int16) {
 		panic(err)
 	}
 
-	opusEncoder.SetBitrate(64 * 1000)
+	opusEncoder.SetBitrate(int(bitRate) * 1000)
 
 	for {
 		recv, ok := <-pcm

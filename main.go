@@ -17,6 +17,7 @@ var (
 	channel    string
 	guildId    string
 	limitVids  int64
+	bitRate    int64
 )
 
 func init() {
@@ -25,10 +26,17 @@ func init() {
 	youtubeKey = os.Getenv("YOUTUBE")
 	discordKey = os.Getenv("DISCORD")
 	chans = os.Getenv("CHANNELS")
+
 	lim := os.Getenv("LIMIT")
 	limitVids, _ = strconv.ParseInt(lim, 10, 64)
 	if limitVids == 0 {
 		limitVids = 20
+	}
+
+	bitr := os.Getenv("BITRATE")
+	bitRate, _ = strconv.ParseInt(bitr, 10, 64)
+	if bitRate == 0 {
+		bitRate = 64
 	}
 }
 

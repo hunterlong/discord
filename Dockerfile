@@ -23,5 +23,7 @@ ENV DISCORD "empty"
 ENV CHANNEL_ID "empty"
 ENV GUILD_ID "empty"
 ENV CHANNELS "empty"
+ENV LIMIT 25
+ENV BITRATE 64
 
 ENTRYPOINT /root/discord
