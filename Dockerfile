@@ -5,7 +5,7 @@ ADD go.mod /go/src/github.com/hunterlong/discord
 ADD go.sum /go/src/github.com/hunterlong/discord
 RUN go mod download
 
-ADD . /go/src/github.com/hunterlong/discord
+ADD . .
 RUN go build -o discord . && \
     chmod +x discord
 
@@ -21,4 +21,4 @@ ENV CHANNEL_ID "empty"
 ENV GUILD_ID "empty"
 ENV CHANNELS "empty"
 
-CMD ["/root/discord"]
+ENTRYPOINT "/root/discord"
