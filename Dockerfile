@@ -1,5 +1,5 @@
 FROM qmcgaw/youtube-dl-alpine
-RUN apk add --no-cache git make musl-dev go
+RUN sudo apk add --no-cache git make musl-dev go linux-headers
 ENV GOROOT /usr/lib/go
 ENV GOPATH /go
 ENV PATH /go/bin:$PATH
